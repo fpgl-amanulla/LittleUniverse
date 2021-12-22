@@ -65,9 +65,9 @@ public class PlayerInteraction : MonoBehaviour
     {
         playerAnimation.PlayAttackAnim();
         yield return new WaitForSeconds(.15f);
-        //axe.SetActive(false);
         chopable.Chop(this.gameObject);
         yield return new WaitForSeconds(.25f);
         canChop = true;
+        axe.SetActive(false);
     }
 }
