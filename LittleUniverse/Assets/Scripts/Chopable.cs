@@ -28,7 +28,8 @@ public abstract class Chopable : MonoBehaviour, IChopable
         if (player == null) return; //Guard Clause
         if (!IsChopable()) return;
 
-        GameObject collectableIns = Instantiate(collectable, Parts[index - 1].transform.position, Quaternion.identity);
+        GameObject collectableIns = Instantiate(collectable, Parts[index - 1].transform.position, collectable.transform.rotation);
+
         collectableIns.transform.DOJump(player.transform.position, 3, 1, .5f).OnComplete(delegate
         {
             Destroy(collectableIns);

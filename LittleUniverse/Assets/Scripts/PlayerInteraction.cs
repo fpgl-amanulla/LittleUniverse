@@ -11,6 +11,7 @@ public class PlayerInteraction : MonoBehaviour
     private bool canChop = true;
 
     [SerializeField] Collider[] colliders;
+    [SerializeField] GameObject axe;
 
     public void Start()
     {
@@ -27,12 +28,13 @@ public class PlayerInteraction : MonoBehaviour
             {
                 var chopable = item.GetComponent<IChopable>();
 
-                Quaternion rotation = Quaternion.LookRotation(item.transform.position - transform.position);
-                //rotation.Set(0, rotation.y, 0, 0);
-                transform.DOLocalRotateQuaternion(rotation, .25f);
 
                 if (chopable.IsChopable() && canChop)
                 {
+                    axe.SetActive(true);
+                    //Quaternion rotation = Quaternion.LookRotation(item.transform.position - transform.position);
+                    //rotation.Set(0, rotation.y, 0, 0);
+                    //transform.DOLocalRotateQuaternion(rotation, .25f);
                     canChop = false;
                     StartCoroutine(StartChopping(chopable));
                 }
@@ -63,6 +65,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         playerAnimation.PlayAttackAnim();
         yield return new WaitForSeconds(.15f);
+        //axe.SetActive(false);
         chopable.Chop(this.gameObject);
         yield return new WaitForSeconds(.25f);
         canChop = true;
