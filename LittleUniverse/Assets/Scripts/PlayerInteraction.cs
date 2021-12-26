@@ -15,8 +15,8 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] Collider[] colliders;
     [SerializeField] GameObject axe;
 
-    [SerializeField] public Transform playerVisual;
-
+    [SerializeField] private Transform playerVisual;
+    List<IChopable> allChopable = new List<IChopable>();
     public void Start()
     {
         playerAnimation = GetComponent<PlayerAnimation>();
@@ -34,22 +34,25 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (item.GetComponent<IChopable>() != null)
             {
-                var chopable = item.GetComponent<IChopable>();
-
-                if (chopable.IsChopable())
+                allChopable.Clear();
+                allChopable.Add(item.GetComponent<IChopable>());
+                foreach (var chopable in allChopable)
                 {
-                    transform.LookAt(new Vector3(item.transform.position.x, transform.position.y, item.transform.position.z));
-                }
+                    if (chopable.IsChopable())
+                    {
+                        transform.LookAt(new Vector3(item.transform.position.x, transform.position.y, item.transform.position.z));
+                    }
 
-                if (chopable.IsChopable() && canChop)
-                {
-                    axe.SetActive(true);
-                    /*Quaternion rotation = Quaternion.LookRotation(item.transform.position - transform.position);
-                    rotation.Set(0, rotation.y, 0, 0);
-                    transform.DOLocalRotateQuaternion(rotation, .25f);*/
-                    playerMovement.isChoping = true;
-                    canChop = false;
-                    StartCoroutine(StartChopping(chopable));
+                    if (chopable.IsChopable() && canChop)
+                    {
+                        axe.SetActive(true);
+                        /*Quaternion rotation = Quaternion.LookRotation(item.transform.position - transform.position);
+                        rotation.Set(0, rotation.y, 0, 0);
+                        transform.DOLocalRotateQuaternion(rotation, .25f);*/
+                        playerMovement.isChoping = true;
+                        canChop = false;
+                        StartCoroutine(StartChopping(chopable));
+                    }
                 }
             }
         }
