@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Random = UnityEngine.Random;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -14,8 +15,11 @@ public class PlayerInteraction : MonoBehaviour
 
     [SerializeField] Collider[] colliders;
     [SerializeField] GameObject axe;
-
     [SerializeField] private Transform playerVisual;
+    [Space(10)]
+    [SerializeField] Transform _canvas;
+    [SerializeField] GameObject collectablePopUpPrefab;
+
     List<IChopable> allChopable = new List<IChopable>();
     public void Start()
     {
@@ -34,27 +38,21 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (item.GetComponent<IChopable>() != null)
             {
-                allChopable.Clear();
-                allChopable.Add(item.GetComponent<IChopable>());
-                foreach (var chopable in allChopable)
+                var chopable = item.GetComponent<IChopable>();
+                if (chopable.IsChopable())
                 {
-                    if (chopable.IsChopable())
-                    {
-                        transform.LookAt(new Vector3(item.transform.position.x, transform.position.y, item.transform.position.z));
-                    }
-
-                    if (chopable.IsChopable() && canChop)
-                    {
-                        axe.SetActive(true);
-                        /*Quaternion rotation = Quaternion.LookRotation(item.transform.position - transform.position);
-                        rotation.Set(0, rotation.y, 0, 0);
-                        transform.DOLocalRotateQuaternion(rotation, .25f);*/
-                        playerMovement.isChoping = true;
-                        canChop = false;
-                        StartCoroutine(StartChopping(chopable));
-                    }
+                    transform.LookAt(new Vector3(item.transform.position.x, transform.position.y, item.transform.position.z));
                 }
+                if (chopable.IsChopable() && canChop)
+                {
+                    axe.SetActive(true);
+                    playerMovement.isChoping = true;
+                    canChop = false;
+                    StartCoroutine(StartChopping(chopable));
+                }
+
             }
+            break;
         }
     }
 
@@ -65,7 +63,7 @@ public class PlayerInteraction : MonoBehaviour
             //SwitchRunTimeAnimatorController
             if (playerAnimation.animator.runtimeAnimatorController != playerAnimation.animatorControllerUperWater)
             {
-                SetPlayerVisual(-1.5f);
+                SetPlayerVisual(-1.4f);
                 playerAnimation.SwitchController(playerAnimation.animatorControllerUperWater);
             }
         }
@@ -79,6 +77,8 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
     }
+
+    public bool IsInGround() => playerAnimation.animator.runtimeAnimatorController == playerAnimation.animatorControllerGround;
 
     private void SetPlayerVisual(float yValue)
     {
@@ -112,9 +112,17 @@ public class PlayerInteraction : MonoBehaviour
         playerAnimation.PlayAttackAnim();
         yield return new WaitForSeconds(.15f);
         chopable.Chop(this.gameObject);
+        ShowCollectablePopUp();
         yield return new WaitForSeconds(.25f);
         canChop = true;
         axe.SetActive(false);
         playerMovement.isChoping = false;
+    }
+
+    public void ShowCollectablePopUp()
+    {
+        Vector3 pos = new Vector3(Random.Range(-100, 100), 150, 0);
+        GameObject popUpIns = Instantiate(collectablePopUpPrefab, _canvas);
+        popUpIns.GetComponent<CollectablePopUp>().ShowPopUp();
     }
 }

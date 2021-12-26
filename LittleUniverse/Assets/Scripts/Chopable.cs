@@ -10,6 +10,7 @@ public abstract class Chopable : MonoBehaviour, IChopable
     [SerializeField] int index = 0;
 
     private GameObject player;
+    private bool isGenarated = false;
 
     public virtual void Chop(GameObject _player)
     {
@@ -21,6 +22,11 @@ public abstract class Chopable : MonoBehaviour, IChopable
 
     public bool IsChopable()
     {
+        if (index >= Parts.Count && !isGenarated)
+        {
+            isGenarated = true;
+            StartCoroutine(Regenerate(5f));
+        }
         return index < Parts.Count;
     }
 
@@ -49,13 +55,19 @@ public abstract class Chopable : MonoBehaviour, IChopable
     }
 
     [ContextMenu("Regenerate")]
-    public void Regenerate()
+    public IEnumerator Regenerate(float delay)
     {
-        foreach (var item in Parts)
+        yield return new WaitForSeconds(delay);
+        for (int i = Parts.Count - 1; i >= 0; i--)
         {
+            GameObject item = Parts[i];
+            Vector3 originScale = item.transform.localScale;
             item.transform.localScale = Vector3.zero;
             item.SetActive(true);
-            item.transform.DOScale(1, .25f);
+            item.transform.DOScale(originScale, .25f);
+            yield return new WaitForSeconds(.05f);
         }
+        isGenarated = false;
+        index = 0;
     }
 }

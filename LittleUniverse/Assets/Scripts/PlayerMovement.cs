@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private PlayerAnimation playerAnimation;
+    private PlayerInteraction playerInteraction;
 
     [Space(10)]
     public float moveSpeed;
@@ -16,9 +17,15 @@ public class PlayerMovement : MonoBehaviour
     [Header("Joysticks")]
     public VariableJoystick joystick;
 
+    [Space(10)]
+    [SerializeField] ParticleSystem walkEffect;
+    private float delatTime = .5f;
+    private float time = 0;
+
     public void Start()
     {
         playerAnimation = GetComponent<PlayerAnimation>();
+        playerInteraction = GetComponent<PlayerInteraction>();
     }
 
     private void Update()
@@ -30,6 +37,14 @@ public class PlayerMovement : MonoBehaviour
 
         bool isRunning = Mathf.Abs(horizontal) > 0 || Mathf.Abs(vertical) > 0;
         playerAnimation.PlayRunAnim(isRunning);
+
+        time += Time.deltaTime;
+        if (time > delatTime)
+        {
+            time = 0;
+            if (isRunning && playerInteraction.IsInGround())
+                walkEffect.Play();
+        }
 
         if (direction.magnitude > .01f)
         {
