@@ -97,7 +97,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_DC22F3AF: {r: 0, g: 0.7149544, b: 1, a: 0}
+    - Color_DC22F3AF: {r: 0.035294108, g: 0.39066714, b: 0.8117647, a: 0}
     - Color_F007FDF: {r: 0.45545566, g: 0.80322796, b: 0.8396226, a: 0}
     - Vector2_6A93A1CF: {r: 1, g: 1, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}

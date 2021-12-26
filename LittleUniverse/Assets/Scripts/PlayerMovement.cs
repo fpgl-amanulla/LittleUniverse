@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed;
     public float turnSmoothTime = .1f;
     private float turnSmoothVelocity;
+    [HideInInspector] public bool isChoping = false;
 
     [Space(10)]
     [Header("Joysticks")]
@@ -34,8 +35,10 @@ public class PlayerMovement : MonoBehaviour
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
+            if (!isChoping)
+            {
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            }
 
             transform.position += moveSpeed * Time.deltaTime * direction;
             //controller.Move(moveSpeed * Time.deltaTime * direction);

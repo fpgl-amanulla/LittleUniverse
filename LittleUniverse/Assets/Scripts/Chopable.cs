@@ -16,6 +16,7 @@ public abstract class Chopable : MonoBehaviour, IChopable
         if (_player) player = _player;
         Parts[index].SetActive(false);
         index++;
+        Shake();
     }
 
     public bool IsChopable()
@@ -34,5 +35,27 @@ public abstract class Chopable : MonoBehaviour, IChopable
         {
             Destroy(collectableIns);
         });
+    }
+
+    public void Shake()
+    {
+        foreach (var item in Parts)
+        {
+            if (item.activeSelf)
+            {
+                item.transform.DOShakeScale(.15f, .25f);
+            }
+        }
+    }
+
+    [ContextMenu("Regenerate")]
+    public void Regenerate()
+    {
+        foreach (var item in Parts)
+        {
+            item.transform.localScale = Vector3.zero;
+            item.SetActive(true);
+            item.transform.DOScale(1, .25f);
+        }
     }
 }
