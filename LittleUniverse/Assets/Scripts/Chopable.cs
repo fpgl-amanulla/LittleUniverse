@@ -9,12 +9,19 @@ public abstract class Chopable : MonoBehaviour, IChopable
 
     [SerializeField] int index = 0;
 
+    private Collider objCollider;
     private GameObject player;
     private bool isGenarated = false;
+
+    public void Start()
+    {
+        objCollider = GetComponent<Collider>();
+    }
 
     public virtual void Chop(GameObject _player)
     {
         if (_player) player = _player;
+        if (!IsChopable()) return;
         Parts[index].SetActive(false);
         index++;
         Shake();
@@ -24,11 +31,13 @@ public abstract class Chopable : MonoBehaviour, IChopable
     {
         if (index >= Parts.Count && !isGenarated)
         {
+            objCollider.enabled = false;
             isGenarated = true;
             StartCoroutine(Regenerate(5f));
         }
         return index < Parts.Count;
     }
+    public Transform GetObjTransForm() => this.transform;
 
     public void CollectCollectable(GameObject collectable)
     {
@@ -67,6 +76,7 @@ public abstract class Chopable : MonoBehaviour, IChopable
             item.transform.DOScale(originScale, .25f);
             yield return new WaitForSeconds(.05f);
         }
+        objCollider.enabled = true;
         isGenarated = false;
         index = 0;
     }

@@ -9,18 +9,19 @@ public class PlayerInteraction : MonoBehaviour
 {
     private PlayerAnimation playerAnimation;
     private PlayerMovement playerMovement;
-    private float radius = 1;
+    private float radius = 1.5f;
     private bool canChop = true;
-    public GameObject cube;
 
     [SerializeField] Collider[] colliders;
     [SerializeField] GameObject axe;
     [SerializeField] private Transform playerVisual;
+
     [Space(10)]
     [SerializeField] Transform _canvas;
     [SerializeField] GameObject collectablePopUpPrefab;
+    [SerializeField] List<GameObject> allChopable = new List<GameObject>();
 
-    List<IChopable> allChopable = new List<IChopable>();
+    int startIndex = 0;
     public void Start()
     {
         playerAnimation = GetComponent<PlayerAnimation>();
@@ -30,30 +31,61 @@ public class PlayerInteraction : MonoBehaviour
 
     public void Update()
     {
-        //transform.LookAt(cube.transform.position);
-
         colliders = Physics.OverlapSphere(transform.position, radius);
+
+        allChopable.Clear();
 
         foreach (var item in colliders)
         {
-            if (item.GetComponent<IChopable>() != null)
+            IChopable chopableItem = item.GetComponent<IChopable>();
+            if (chopableItem != null)
             {
-                var chopable = item.GetComponent<IChopable>();
-                if (chopable.IsChopable())
-                {
-                    transform.LookAt(new Vector3(item.transform.position.x, transform.position.y, item.transform.position.z));
-                }
-                if (chopable.IsChopable() && canChop)
-                {
-                    axe.SetActive(true);
-                    playerMovement.isChoping = true;
-                    canChop = false;
-                    StartCoroutine(StartChopping(chopable));
-                }
-
+                //if (!allChopable.Contains(item.gameObject))
+                //    allChopable.Remove(item.gameObject);
+                //else
+                allChopable.Add(item.gameObject);
             }
-            break;
         }
+
+        if (allChopable.Count > 0)
+        {
+            var chopable = allChopable[startIndex].GetComponent<IChopable>();
+            if (chopable.IsChopable())
+            {
+                transform.LookAt(new Vector3(chopable.GetObjTransForm().position.x,
+                                             transform.position.y,
+                                             chopable.GetObjTransForm().transform.position.z));
+            }
+            if (chopable.IsChopable() && canChop)
+            {
+                axe.SetActive(true);
+                playerMovement.isChoping = true;
+                canChop = false;
+                StartCoroutine(StartChopping());
+            }
+        }
+    }
+
+    private IEnumerator StartChopping()
+    {
+        playerAnimation.PlayAttackAnim();
+        yield return new WaitForSeconds(.15f);
+        foreach (var chopable in allChopable)
+        {
+            chopable.GetComponent<IChopable>().Chop(this.gameObject);
+        }
+        ShowCollectablePopUp();
+        yield return new WaitForSeconds(.25f);
+        canChop = true;
+        axe.SetActive(false);
+        playerMovement.isChoping = false;
+    }
+
+    public void ShowCollectablePopUp()
+    {
+        Vector3 pos = new Vector3(Random.Range(-100, 100), 150, 0);
+        GameObject popUpIns = Instantiate(collectablePopUpPrefab, _canvas);
+        popUpIns.GetComponent<CollectablePopUp>().ShowPopUp();
     }
 
     public void OnCollisionStay(Collision collision)
@@ -105,24 +137,5 @@ public class PlayerInteraction : MonoBehaviour
     public void OnTriggerExit(Collider other)
     {
 
-    }
-
-    private IEnumerator StartChopping(IChopable chopable)
-    {
-        playerAnimation.PlayAttackAnim();
-        yield return new WaitForSeconds(.15f);
-        chopable.Chop(this.gameObject);
-        ShowCollectablePopUp();
-        yield return new WaitForSeconds(.25f);
-        canChop = true;
-        axe.SetActive(false);
-        playerMovement.isChoping = false;
-    }
-
-    public void ShowCollectablePopUp()
-    {
-        Vector3 pos = new Vector3(Random.Range(-100, 100), 150, 0);
-        GameObject popUpIns = Instantiate(collectablePopUpPrefab, _canvas);
-        popUpIns.GetComponent<CollectablePopUp>().ShowPopUp();
     }
 }

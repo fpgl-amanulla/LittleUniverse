@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
             if (!isChoping)
             {
-                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+                transform.rotation = Quaternion.Euler(-5f, angle, 0f);
             }
 
             transform.position += moveSpeed * Time.deltaTime * direction;
