@@ -42,13 +42,11 @@ public class LandUnlocker : MonoBehaviour
                             Destroy(collectableIns);
                             unlockResAmount--;
                             //canUnlock = true;
-                            if (unlockResAmount <= 0)
-                            {
-                                //Land Unlocked
-                                //Instantiate(unlockEffect, landToUnlock.transform.localPosition, Quaternion.identity);
-                                landToUnlock.SetActive(true);
-                                this.gameObject.SetActive(false);
-                            }
+                            if (unlockResAmount > 0) return;
+                            //Land Unlocked
+                            //Instantiate(unlockEffect, landToUnlock.transform.localPosition, Quaternion.identity);
+                            landToUnlock.SetActive(true);
+                            this.gameObject.SetActive(false);
                         });
                    });
             yield return new WaitForSeconds(.1f);

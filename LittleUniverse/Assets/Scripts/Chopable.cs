@@ -11,7 +11,7 @@ public abstract class Chopable : MonoBehaviour, IChopable
 
     private Collider objCollider;
     private GameObject player;
-    private bool isGenarated = false;
+    private bool isGenerated = false;
 
     public void Start()
     {
@@ -29,17 +29,17 @@ public abstract class Chopable : MonoBehaviour, IChopable
 
     public bool IsChopable()
     {
-        if (index >= Parts.Count && !isGenarated)
+        if (index >= Parts.Count && !isGenerated)
         {
             objCollider.enabled = false;
-            isGenarated = true;
+            isGenerated = true;
             StartCoroutine(Regenerate(5f));
         }
         return index < Parts.Count;
     }
     public Transform GetObjTransForm() => this.transform;
 
-    public void CollectCollectable(GameObject collectable)
+    protected void CollectCollectable(GameObject collectable)
     {
         if (player == null) return; //Guard Clause
         if (!IsChopable()) return;
@@ -52,7 +52,7 @@ public abstract class Chopable : MonoBehaviour, IChopable
         });
     }
 
-    public void Shake()
+    private void Shake()
     {
         foreach (var item in Parts)
         {
@@ -77,7 +77,7 @@ public abstract class Chopable : MonoBehaviour, IChopable
             yield return new WaitForSeconds(.05f);
         }
         objCollider.enabled = true;
-        isGenarated = false;
+        isGenerated = false;
         index = 0;
     }
 }

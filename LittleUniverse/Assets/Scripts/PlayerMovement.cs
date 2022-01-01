@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Space(10)]
     [SerializeField] ParticleSystem walkEffect;
-    private float delatTime = .5f;
+    private float deltaTime = .5f;
     private float time = 0;
 
     public void Start()
@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
         playerAnimation.PlayRunAnim(isRunning);
 
         time += Time.deltaTime;
-        if (time > delatTime)
+        if (time > deltaTime)
         {
             time = 0;
             if (isRunning && playerInteraction.IsInGround())

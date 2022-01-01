@@ -9,15 +9,15 @@ AnimatorOverrideController:
   m_Name: PlayerStickManWater
   m_Controller: {fileID: 9100000, guid: 7e9dfba4839f442eba026df645939685, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: -2513759309210151659, guid: 9f4a867676043441cbf775785c506d49,
+  - m_OriginalClip: {fileID: -2513759309210151659, guid: e7f679a6d6f80445989b6bd43d508f7f,
       type: 3}
-    m_OverrideClip: {fileID: -2513759309210151659, guid: 9f4a867676043441cbf775785c506d49,
+    m_OverrideClip: {fileID: -2513759309210151659, guid: e7f679a6d6f80445989b6bd43d508f7f,
       type: 3}
-  - m_OriginalClip: {fileID: 665853745831072719, guid: 9f4a867676043441cbf775785c506d49,
+  - m_OriginalClip: {fileID: 665853745831072719, guid: e7f679a6d6f80445989b6bd43d508f7f,
       type: 3}
-    m_OverrideClip: {fileID: 7810910473113881942, guid: 9f4a867676043441cbf775785c506d49,
+    m_OverrideClip: {fileID: 7810910473113881942, guid: e7f679a6d6f80445989b6bd43d508f7f,
       type: 3}
-  - m_OriginalClip: {fileID: 5128389309265931517, guid: 9f4a867676043441cbf775785c506d49,
+  - m_OriginalClip: {fileID: -3308531264779676132, guid: e7f679a6d6f80445989b6bd43d508f7f,
       type: 3}
-    m_OverrideClip: {fileID: 7330622477707321032, guid: 9f4a867676043441cbf775785c506d49,
+    m_OverrideClip: {fileID: 7330622477707321032, guid: e7f679a6d6f80445989b6bd43d508f7f,
       type: 3}

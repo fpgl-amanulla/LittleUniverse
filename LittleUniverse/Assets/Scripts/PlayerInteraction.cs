@@ -81,7 +81,7 @@ public class PlayerInteraction : MonoBehaviour
         playerMovement.isChoping = false;
     }
 
-    public void ShowCollectablePopUp()
+    private void ShowCollectablePopUp()
     {
         Vector3 pos = new Vector3(Random.Range(-100, 100), 150, 0);
         GameObject popUpIns = Instantiate(collectablePopUpPrefab, _canvas);
@@ -93,10 +93,10 @@ public class PlayerInteraction : MonoBehaviour
         if (collision.collider.CompareTag("Water"))
         {
             //SwitchRunTimeAnimatorController
-            if (playerAnimation.animator.runtimeAnimatorController != playerAnimation.animatorControllerUperWater)
+            if (playerAnimation.animator.runtimeAnimatorController != playerAnimation.animatorControllerUpperWater)
             {
                 SetPlayerVisual(-1.4f);
-                playerAnimation.SwitchController(playerAnimation.animatorControllerUperWater);
+                playerAnimation.SwitchController(playerAnimation.animatorControllerUpperWater);
             }
         }
         else if (collision.collider.CompareTag("Ground"))
@@ -114,9 +114,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void SetPlayerVisual(float yValue)
     {
-        playerVisual.localPosition = new Vector3(playerVisual.localPosition.x,
+        var localPosition = playerVisual.localPosition;
+        localPosition = new Vector3(localPosition.x,
                                                  yValue,
-                                                 playerVisual.localPosition.z);
+                                                 localPosition.z);
+        playerVisual.localPosition = localPosition;
     }
 
 
