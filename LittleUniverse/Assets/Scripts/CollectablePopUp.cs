@@ -16,12 +16,7 @@ public class CollectablePopUp : MonoBehaviour
         rectTransform.anchoredPosition = new Vector2(Random.Range(-50, 30), 150);
         rectTransform.DOAnchorPos3DY(250, .5f).OnComplete(delegate
         {
-            rectTransform.DOShakeScale(.15f, .1f).OnComplete(delegate
-            {
-                Destroy(this.gameObject);
-            });
-
+            rectTransform.DOShakeScale(.15f, .1f).OnComplete(delegate { Destroy(this.gameObject); });
         });
     }
-    
 }

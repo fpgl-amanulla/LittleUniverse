@@ -1,22 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 
-public abstract class Chopable : MonoBehaviour, IChopable
+public abstract class Choppable : MonoBehaviour, IChopable
 {
     public List<GameObject> Parts = new List<GameObject>();
-
     [SerializeField] int index = 0;
 
     private Collider objCollider;
     private GameObject player;
     private bool isGenerated = false;
 
-    public void Start()
-    {
-        objCollider = GetComponent<Collider>();
-    }
+    public void Start() => objCollider = GetComponent<Collider>();
 
     public virtual void Chop(GameObject _player)
     {
@@ -29,14 +26,13 @@ public abstract class Chopable : MonoBehaviour, IChopable
 
     public bool IsChopable()
     {
-        if (index >= Parts.Count && !isGenerated)
-        {
-            objCollider.enabled = false;
-            isGenerated = true;
-            StartCoroutine(Regenerate(5f));
-        }
+        if (index < Parts.Count || isGenerated) return index < Parts.Count;
+        objCollider.enabled = false;
+        isGenerated = true;
+        StartCoroutine(Regenerate(5f));
         return index < Parts.Count;
     }
+
     public Transform GetObjTransForm() => this.transform;
 
     protected void CollectCollectable(GameObject collectable)
@@ -44,23 +40,17 @@ public abstract class Chopable : MonoBehaviour, IChopable
         if (player == null) return; //Guard Clause
         if (!IsChopable()) return;
 
-        GameObject collectableIns = Instantiate(collectable, Parts[index - 1].transform.position, collectable.transform.rotation);
+        GameObject collectableIns =
+            Instantiate(collectable, Parts[index - 1].transform.position, collectable.transform.rotation);
 
-        collectableIns.transform.DOJump(player.transform.position, 3, 1, .5f).OnComplete(delegate
-        {
-            Destroy(collectableIns);
-        });
+        collectableIns.transform.DOJump(player.transform.position, 6, 1, .8f).SetEase(Ease.OutSine)
+            .OnComplete(delegate { Destroy(collectableIns); });
     }
 
     private void Shake()
     {
-        foreach (var item in Parts)
-        {
-            if (item.activeSelf)
-            {
-                item.transform.DOShakeScale(.15f, .25f);
-            }
-        }
+        foreach (GameObject item in Parts.Where(item => item.activeSelf))
+            item.transform.DOShakeScale(.15f, .35f);
     }
 
     [ContextMenu("Regenerate")]
@@ -76,6 +66,7 @@ public abstract class Chopable : MonoBehaviour, IChopable
             item.transform.DOScale(originScale, .25f);
             yield return new WaitForSeconds(.05f);
         }
+
         objCollider.enabled = true;
         isGenerated = false;
         index = 0;
